@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Your Career Interests!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e0f2fe; /* Lighter, more vibrant blue background */
+            color: #1a202c; /* Darker text for contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            padding: 1rem;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto; /* Center horizontally */
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 2rem; /* Even more rounded corners */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); /* Stronger, softer shadow */
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-container {
+            min-height: 180px; /* Ensure consistent height for questions */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #f0f9ff; /* Very light blue for question box */
+            border-radius: 1.25rem;
+            border: 2px solid #a7d9f8; /* Slightly more prominent border */
+            transition: all 0.4s ease-in-out;
+        }
+        .question-container.fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: questionFadeIn 0.5s forwards;
+        }
+        @keyframes questionFadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-item label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c5282; /* Darker blue for questions */
+            font-size: 1.5rem; /* Larger font for questions */
+            line-height: 1.4;
+        }
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            justify-content: center;
+            gap: 1rem; /* Space out radio buttons */
+            margin-top: 1.5rem;
+        }
+        .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500; /* Medium font weight for radio labels */
+            color: #4a5568; /* Slightly lighter radio label text */
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #90cdf4; /* Blue border */
+            border-radius: 1rem; /* More rounded radio buttons */
+            transition: all 0.3s ease-in-out;
+            background-color: #e0f2fe; /* Light blue background for options */
+        }
+        .radio-group label:hover {
+            background-color: #bfdbfe; /* Darker blue on hover */
+            border-color: #4299e1; /* Stronger border on hover */
+            transform: translateY(-2px); /* Lift effect on hover */
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.2);
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 0.75rem;
+            accent-color: #3b82f6; /* Blue accent for radios */
+            transform: scale(1.3); /* Larger radio buttons */
+        }
+        .radio-group input[type="radio"]:checked + span {
+            font-weight: 700; /* Bold text for selected option */
+            color: #1e40af; /* Darker blue for selected text */
+        }
+
+        .result-box {
+            background-color: #e6fffa; /* Light teal for results */
+            border: 2px solid #81e6d9; /* Teal border */
+            padding: 2rem;
+            border-radius: 1.5rem;
+            margin-top: 2.5rem;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        .result-box h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c7a7b; /* Dark teal heading */
+            margin-bottom: 1.25rem;
+        }
+        .result-box ul {
+            list-style: none;
+            padding: 0;
+        }
+        .result-box ul li {
+            margin-bottom: 0.6rem;
+            color: #38b2ac; /* Teal for list items */
+        }
+        .career-suggestion {
+            background-color: #f0fdf4; /* Very light green for career suggestions */
+            border: 1px solid #9ae6b4; /* Green border */
+            padding: 1.25rem;
+            border-radius: 1rem;
+            margin-top: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .career-suggestion h4 {
+            font-weight: 700;
+            color: #2f855a; /* Dark green heading */
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+        .career-suggestion p {
+            color: #38a169; /* Green text */
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .career-suggestion ul {
+            list-style: disc; /* Use discs for career list */
+            padding-left: 1.5rem;
+            margin-top: 0.75rem;
+        }
+        .career-suggestion ul li {
+            margin-bottom: 0.4rem;
+            color: #48bb78; /* Lighter green for list items */
+            font-size: 0.95rem;
+        }
+        .button-primary {
+            background-image: linear-gradient(to right, #63b3ed, #4299e1); /* Lighter blue gradient */
+            color: white;
+            padding: 0.9rem 2rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-image 0.3s ease;
+            box-shadow: 0 6px 15px rgba(66, 153, 225, 0.4);
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.05em;
+        }
+        .button-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(66, 153, 225, 0.5);
+            background-image: linear-gradient(to right, #4299e1, #3182ce); /* Darker blue on hover */
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 0.5rem;
+            height: 12px; /* Slightly thicker progress bar */
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #3b82f6; /* Blue progress bar */
+            border-radius: 0.5rem;
+            transition: width 0.4s ease-in-out;
+        }
+        .fun-fact-box {
+            background-color: #fffaeb; /* Light yellow for fun facts */
+            border: 1px solid #ffe08a; /* Yellow border */
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-style: italic;
+            color: #b7791f; /* Dark yellow text */
+            font-size: 0.95rem;
+            animation: popIn 0.5s ease-out;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.25rem;
+                margin: 1rem auto;
+            }
+            .question-item label {
+                font-size: 1.2rem;
+            }
+            .radio-group {
+                flex-direction: column; /* Stack options vertically on small screens */
+                gap: 0.75rem;
+            }
+            .radio-group label {
+                width: 100%; /* Full width options */
+                justify-content: center; /* Center text within option */
+                padding: 0.6rem 1rem;
+                font-size: 1rem;
+            }
+            .button-primary {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            .result-box {
+                padding: 1.5rem;
+            }
+            .result-box h3 {
+                font-size: 1.6rem;
+            }
+            .career-suggestion h4 {
+                font-size: 1.1rem;
+            }
+            .career-suggestion p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Discover Your Career Interests! 🎉</h1>
+        <p class="text-center text-gray-600 mb-8">Let's go on an adventure to find out what exciting career paths might be a great fit for you! ✨</p>
+
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <p id="questionCounter" class="text-center text-sm text-gray-500 mb-6">Question 1 of 30</p>
+
+        <form id="riasecForm" class="space-y-6">
+            <div id="questionsContainer">
+                </div>
+
+            <div id="funFactDisplay" class="fun-fact-box hidden">
+                </div>
+
+            <div class="text-center mt-8">
+                <button type="button" id="nextButton" class="button-primary mr-4">Next Question 👉</button>
+                <button type="submit" id="calculateButton" class="button-primary hidden">Show My Results! 🚀</button>
+            </div>
+        </form>
+
+        <div id="results" class="result-box hidden">
+            <h3 class="text-center">Your Top Career Interests:</h3>
+            <div id="riasecCodes" class="text-center text-3xl font-bold text-blue-800 my-4"></div>
+            <p class="text-center text-gray-700 mb-6">Based on your answers, here are some potential career paths and prospects in Brunei and the ASEAN region that might suit you:</p>
+
+            <div id="careerSuggestions" class="space-y-4">
+                </div>
+            <p class="text-center text-gray-600 mt-8 text-sm">Remember, this is just a guide to help you explore! Your interests may change as you grow and learn more. Keep exploring! 🌟</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Realistic (R) Questions
+            { type: 'R', text: "Imagine you find a broken bicycle. Would you try to fix it yourself, even if it takes some effort? 🛠️" },
+            { type: 'R', text: "You have a school project where you need to build something. Would you prefer to design and build a physical model or write a report about it? 🏗️" },
+            { type: 'R', text: "If you could spend a day learning a new skill, would you choose to learn how to use woodworking tools or how to play a musical instrument? 🔨" },
+            { type: 'R', text: "Would you enjoy a job where you work with your hands, like building houses or working on cars? 👷" },
+            { type: 'R', text: "Do you like spending time outdoors, maybe gardening or helping with animals? 🌳🐾" },
+
+            // Investigative (I) Questions
+            { type: 'I', text: "A new puzzle game comes out. Are you excited to figure out all its rules and strategies? 🧩" },
+            { type: 'I', text: "When you see something complicated, like a computer program or a scientific experiment, do you want to understand exactly how it works? 🔬" },
+            { type: 'I', text: "If you had to choose a school club, would you prefer a science club where you do experiments or a drama club where you act? 🧪" },
+            { type: 'I', text: "Do you enjoy reading non-fiction books or articles that explain new discoveries or ideas? 📚" },
+            { type: 'I', text: "Would you like a job where you need to think deeply and solve tricky problems every day? 🤔" },
+
+            // Artistic (A) Questions
+            { type: 'A', text: "You have free time. Would you rather draw, paint, or create something artistic, or play a sport? 🎨" },
+            { type: 'A', text: "Do you enjoy expressing yourself through music, dance, or writing stories/poems? 🎶✍️" },
+            { type: 'A', text: "When you get a new outfit, do you like to mix and match to create your own unique style? 👗✨" },
+            { type: 'A', text: "Would you be interested in learning how to design a cool new app or a beautiful building? 💻🏛️" },
+            { type: 'A', text: "Do you like to imagine new things and come up with original ideas? 💡" },
+
+            // Social (S) Questions
+            { type: 'S', text: "A friend is feeling sad. Would you try to talk to them and help them feel better? 🤗" },
+            { type: 'S', text: "Do you enjoy working on group projects at school, where everyone helps each other? 🤝" },
+            { type: 'S', text: "Would you like to teach something you know well to younger students? 👩‍🏫" },
+            { type: 'S', text: "Do you enjoy listening to people's stories and understanding different perspectives? 👂" },
+            { type: 'S', text: "If there's a community event, would you like to volunteer to help organize or participate? 💖" },
+
+            // Enterprising (E) Questions
+            { type: 'E', text: "If your class needs a leader for a project, would you like to be the one to organize everyone? 👑" },
+            { type: 'E', text: "Do you enjoy trying to convince your friends to try a new game or activity you like? 🗣️" },
+            { type: 'E', text: "Have you ever thought about starting your own small business, like selling handmade crafts? 💰" },
+            { type: 'E', text: "Do you like to take charge and make decisions for a group? ✅" },
+            { type: 'E', text: "Would you enjoy giving a presentation to your class about a topic you're passionate about? 🎤" },
+
+            // Conventional (C) Questions
+            { type: 'C', text: "Do you like to keep your school notes and belongings neatly organized? 🗄️" },
+            { type: 'C', text: "When you have a task, do you prefer to follow a step-by-step plan? 📝" },
+            { type: 'C', text: "Are you good at noticing small details and making sure everything is correct? ✔️" },
+            { type: 'C', text: "Do you enjoy working with numbers, like keeping track of scores or managing a budget? 📊" },
+            { type: 'C', text: "Would you like a job where you manage information or organize files for a company? 📁" }
+        ];
+
+        const funFacts = [
+            "Did you know that many jobs in the future will require skills in technology, even if they are not 'tech jobs'? Learning about computers is super helpful! 💡",
+            "The world of work is always changing! New jobs are created all the time, especially in areas like green energy and digital creativity. 🌍",
+            "Your interests today can lead to amazing careers tomorrow! What you love doing for fun might be a clue to your future job. 🌟",
+            "Teamwork is a super important skill in almost every job! Learning to work well with others helps you succeed. 🤝",
+            "Problem-solving is like being a detective for real-life challenges! Many jobs involve figuring out how to make things better. 🔍",
+            "Did you know that Brunei is focusing on diversifying its economy beyond oil and gas? This means new opportunities in tech, tourism, and more! 🇧🇳",
+            "Many jobs in Southeast Asia are growing fast in areas like digital marketing and app development. Being creative with technology is a big plus! 📱",
+            "Learning a second language can open up many career doors, especially in a diverse region like ASEAN! 🗣️",
+            "The 'gig economy' means more people are working freelance or on short-term projects. This offers flexibility and variety! 💼",
+            "Even if you don't know exactly what you want to do yet, exploring different subjects at school can help you discover new passions! 📚"
+        ];
+
+        let currentQuestionIndex = 0;
+        const totalQuestions = questions.length;
+        const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+
+        const questionsContainer = document.getElementById('questionsContainer');
+        const progressBar = document.getElementById('progressBar');
+        const questionCounter = document.getElementById('questionCounter');
+        const nextButton = document.getElementById('nextButton');
+        const calculateButton = document.getElementById('calculateButton');
+        const resultsSection = document.getElementById('results');
+        const funFactDisplay = document.getElementById('funFactDisplay');
+
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+        }
+
+        function displayQuestion(index) {
+            questionsContainer.innerHTML = ''; // Clear previous question
+            funFactDisplay.classList.add('hidden'); // Hide fun fact for new question
+
+            if (index < totalQuestions) {
+                const q = questions[index];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container fade-in'; // Add fade-in class
+                questionDiv.innerHTML = `
+                    <div class="question-item">
+                        <label>${q.text}</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="q${index}" value="2" data-type="${q.type}" required> <span>Yes, I like it!</span></label>
+                            <label><input type="radio" name="q${index}" value="1" data-type="${q.type}"> <span>Maybe, I'm curious</span></label>
+                            <label><input type="radio" name="q${index}" value="0" data-type="${q.type}"> <span>Not really</span></label>
+                        </div>
+                    </div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+                updateProgressBar();
+
+                // Show/hide buttons
+                if (currentQuestionIndex === totalQuestions - 1) {
+                    nextButton.classList.add('hidden');
+                    calculateButton.classList.remove('hidden');
+                } else {
+                    nextButton.classList.remove('hidden');
+                    calculateButton.classList.add('hidden');
+                }
+
+                // Display a fun fact every 5 questions, starting from question 5
+                if ((currentQuestionIndex + 1) % 5 === 0 && currentQuestionIndex > 0) {
+                    const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
+                    funFactDisplay.textContent = `💡 Fun Fact: ${randomFact}`;
+                    funFactDisplay.classList.remove('hidden');
+                }
+            }
+        }
+
+        function collectAnswer() {
+            const selectedRadio = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (selectedRadio) {
+                const type = selectedRadio.dataset.type;
+                const value = parseInt(selectedRadio.value);
+                scores[type] += value;
+                return true;
+            } else {
+                const messageBox = document.createElement('div');
+                messageBox.textContent = "Oops! Please pick an answer before moving on. 😊";
+                messageBox.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: #fffaeb;
+                    border: 2px solid #ffe08a;
+                    padding: 1rem 2rem;
+                    border-radius: 1rem;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    font-weight: 600;
+                    color: #b7791f;
+                    font-size: 1.1rem;
+                    animation: popIn 0.3s ease-out;
+                `;
+                document.body.appendChild(messageBox);
+                setTimeout(() => {
+                    messageBox.remove();
+                }, 3000);
+                return false;
+            }
+        }
+
+        nextButton.addEventListener('click', function() {
+            if (collectAnswer()) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+
+        document.getElementById('riasecForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (collectAnswer()) {
+                const sortedScores = Object.entries(scores).sort(([, a], [, b]) => b - a);
+                const topCodes = sortedScores.slice(0, 3).map(entry => entry[0]);
+
+                const riasecCodesDiv = document.getElementById('riasecCodes');
+                riasecCodesDiv.textContent = topCodes.join('');
+
+                const careerSuggestions = {
+                    R: {
+                        name: "Realistic (The Doers) 🛠️",
+                        description: "You enjoy working with your hands, tools, and being physically active. You like practical, hands-on tasks.",
+                        careers: [
+                            { title: "Skilled Trades (e.g., Welder, Electrician, Mechanic)", prospect: "High demand in Brunei's energy and construction sectors. Essential for infrastructure development across ASEAN." },
+                            { title: "Engineer (e.g., Mechanical, Civil, Petroleum)", prospect: "Strong demand in Brunei's oil & gas, and construction industries. Also needed for smart manufacturing and green energy projects in ASEAN." },
+                            { title: "Agricultural Technician/Farmer (Modern Agriculture)", prospect: "Growing focus on food security and sustainable agriculture in ASEAN, using new technologies." },
+                            { title: "Robotics Technician", prospect: "As automation increases in manufacturing across ASEAN, skilled technicians are needed to maintain and operate robots." }
+                        ]
+                    },
+                    I: {
+                        name: "Investigative (The Thinkers) 🤔",
+                        description: "You are curious, analytical, and enjoy solving complex problems. You like to research and understand how things work.",
+                        careers: [
+                            { title: "Data Scientist/Analyst", prospect: "Extremely high demand across all ASEAN countries as businesses rely more on data for decision-making." },
+                            { title: "Software Developer/Programmer", prospect: "Core to digital transformation. Constant demand for building apps, websites, and software solutions." },
+                            { title: "AI Specialist/Machine Learning Engineer", prospect: "Emerging and high-paying field in Brunei and ASEAN, driving innovation in various industries like finance and healthcare." },
+                            { title: "Research Scientist (e.g., Environmental, Medical)", prospect: "Growing investment in R&D, especially in healthcare, sustainability, and advanced materials across the region." }
+                        ]
+                    },
+                    A: {
+                        name: "Artistic (The Creators) 🎨",
+                        description: "You are creative, expressive, and enjoy working without strict rules. You like to design, write, or perform.",
+                        careers: [
+                            { title: "UI/UX Designer", prospect: "High demand in the digital economy for creating user-friendly and appealing websites and applications." },
+                            { title: "Content Creator/Digital Marketer", prospect: "With the rise of e-commerce and social media, businesses need creative individuals to engage audiences." },
+                            { title: "Graphic Designer/Animator", prospect: "Needed for branding, advertising, and entertainment industries across ASEAN." },
+                            { title: "Architect/Interior Designer", prospect: "Continued growth in urban development and infrastructure projects." }
+                        ]
+                    },
+                    S: {
+                        name: "Social (The Helpers) 🤝",
+                        description: "You enjoy working with and helping others. You are good at communicating and making a positive impact.",
+                        careers: [
+                            { title: "Educator/Teacher", prospect: "Always in demand, especially for specialized skills and in vocational training to meet industry needs." },
+                            { title: "Healthcare Professional (e.g., Nurse, Doctor, Therapist)", prospect: "Rapid expansion in healthcare across ASEAN due to aging populations and increased investment." },
+                            { title: "Human Resources Specialist", prospect: "As companies grow, they need professionals to manage talent, training, and employee well-being." },
+                            { title: "Social Worker/Counselor", prospect: "Increasing recognition of mental health and social support needs in communities." }
+                        ]
+                    },
+                    E: {
+                        name: "Enterprising (The Persuaders) �",
+                        description: "You are confident, persuasive, and like to lead. You enjoy starting projects and influencing others.",
+                        careers: [
+                            { title: "Entrepreneur/Startup Founder", prospect: "Brunei and ASEAN actively support new businesses, especially in tech and innovative sectors." },
+                            { title: "Business Development Manager", prospect: "Crucial for companies expanding into new markets and forging partnerships across the region." },
+                            { title: "Sales & Marketing Professional", prospect: "Essential for driving growth in various industries, particularly in e-commerce and digital services." },
+                            { title: "Project Manager", prospect: "High demand across all sectors for individuals who can lead and complete complex projects efficiently." }
+                        ]
+                    },
+                    C: {
+                        name: "Conventional (The Organizers) 🗄️",
+                        description: "You are detail-oriented, organized, and enjoy working with data and clear procedures.",
+                        careers: [
+                            { title: "Accountant/Auditor", prospect: "Consistent demand for financial management and compliance in all businesses." },
+                            { title: "Logistics & Supply Chain Coordinator", prospect: "Growth in trade and manufacturing across ASEAN requires efficient organization of goods and services." },
+                            { title: "Administrative Professional/Office Manager", prospect: "Key roles in ensuring smooth operations in any organization." },
+                            { title: "Data Entry/Database Administrator", prospect: "Important for managing large volumes of information in the digital age." }
+                        ]
+                    }
+                };
+
+                const careerSuggestionsDiv = document.getElementById('careerSuggestions');
+                careerSuggestionsDiv.innerHTML = '';
+
+                topCodes.forEach(code => {
+                    const typeInfo = careerSuggestions[code];
+                    if (typeInfo) {
+                        const typeSection = document.createElement('div');
+                        typeSection.className = 'career-suggestion';
+                        typeSection.innerHTML = `
+                            <h4>${typeInfo.name}</h4>
+                            <p>${typeInfo.description}</p>
+                            <h5 class="font-semibold mt-3 mb-2 text-gray-800">Potential Careers & Prospects:</h5>
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                ${typeInfo.careers.map(career => `<li><strong>${career.title}:</strong> ${career.prospect}</li>`).join('')}
+                            </ul>
+                        `;
+                        careerSuggestionsDiv.appendChild(typeSection);
+                    }
+                });
+
+                document.getElementById('riasecForm').classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Initial display
+        displayQuestion(currentQuestionIndex);
+    </script>
+</body>
+</html>
