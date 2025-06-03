@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discover Your Career Interests!</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
@@ -165,6 +166,24 @@
             box-shadow: 0 8px 20px rgba(66, 153, 225, 0.5);
             background-image: linear-gradient(to right, #4299e1, #3182ce); /* Darker blue on hover */
         }
+        .button-secondary {
+            background-color: #f7fafc; /* Light gray */
+            color: #4a5568; /* Darker gray text */
+            padding: 0.9rem 2rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: 2px solid #cbd5e1;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+        }
+        .button-secondary:hover {
+            background-color: #e2e8f0;
+            border-color: #a0aec0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
         .progress-bar-container {
             width: 100%;
             background-color: #e2e8f0;
@@ -216,9 +235,12 @@
                 padding: 0.6rem 1rem;
                 font-size: 1rem;
             }
-            .button-primary {
+            .button-primary, .button-secondary {
                 padding: 0.8rem 1.5rem;
                 font-size: 1rem;
+                width: calc(50% - 0.5rem); /* Adjust width for two buttons side-by-side */
+                margin-right: 0.5rem;
+                margin-left: 0.5rem;
             }
             .result-box {
                 padding: 1.5rem;
@@ -245,7 +267,7 @@
         </div>
         <p id="questionCounter" class="text-center text-sm text-gray-500 mb-6">Question 1 of 30</p>
 
-        <form id="riasecForm" class="space-y-6">
+        <form id="riaseacForm" class="space-y-6">
             <div id="questionsContainer">
                 </div>
 
@@ -260,11 +282,17 @@
 
         <div id="results" class="result-box hidden">
             <h3 class="text-center">Your Top Career Interests:</h3>
-            <div id="riasecCodes" class="text-center text-3xl font-bold text-blue-800 my-4"></div>
+            <div id="riaseacCodes" class="text-center text-3xl font-bold text-blue-800 my-4"></div>
             <p class="text-center text-gray-700 mb-6">Based on your answers, here are some potential career paths and prospects in Brunei and the ASEAN region that might suit you:</p>
 
             <div id="careerSuggestions" class="space-y-4">
                 </div>
+
+            <div class="text-center mt-8 space-y-4 md:space-y-0 md:space-x-4">
+                <button type="button" id="emailResultsButton" class="button-secondary">Email My Results 📧</button>
+                <button type="button" id="savePdfButton" class="button-secondary">Save as PDF 💾</button>
+            </div>
+
             <p class="text-center text-gray-600 mt-8 text-sm">Remember, this is just a guide to help you explore! Your interests may change as you grow and learn more. Keep exploring! 🌟</p>
         </div>
     </div>
@@ -321,7 +349,7 @@
             "Teamwork is a super important skill in almost every job! Learning to work well with others helps you succeed. 🤝",
             "Problem-solving is like being a detective for real-life challenges! Many jobs involve figuring out how to make things better. 🔍",
             "Did you know that Brunei is focusing on diversifying its economy beyond oil and gas? This means new opportunities in tech, tourism, and more! 🇧🇳",
-            "Many jobs in Southeast Asia are growing fast in areas like digital marketing and app development. Being creative with technology is a big plus! 📱",
+            "Many jobs in Southeast Asia are growing fast in areas like digital marketing and app development. Being creative with technology is a big plus! �",
             "Learning a second language can open up many career doors, especially in a diverse region like ASEAN! 🗣️",
             "The 'gig economy' means more people are working freelance or on short-term projects. This offers flexibility and variety! 💼",
             "Even if you don't know exactly what you want to do yet, exploring different subjects at school can help you discover new passions! 📚"
@@ -338,6 +366,8 @@
         const calculateButton = document.getElementById('calculateButton');
         const resultsSection = document.getElementById('results');
         const funFactDisplay = document.getElementById('funFactDisplay');
+        const emailResultsButton = document.getElementById('emailResultsButton');
+        const savePdfButton = document.getElementById('savePdfButton');
 
         function updateProgressBar() {
             const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
@@ -425,16 +455,16 @@
             }
         });
 
-        document.getElementById('riasecForm').addEventListener('submit', function(event) {
+        document.getElementById('riaseacForm').addEventListener('submit', function(event) {
             event.preventDefault();
             if (collectAnswer()) {
                 const sortedScores = Object.entries(scores).sort(([, a], [, b]) => b - a);
                 const topCodes = sortedScores.slice(0, 3).map(entry => entry[0]);
 
-                const riasecCodesDiv = document.getElementById('riasecCodes');
-                riasecCodesDiv.textContent = topCodes.join('');
+                const riaseacCodesDiv = document.getElementById('riaseacCodes');
+                riaseacCodesDiv.textContent = topCodes.join('');
 
-                const careerSuggestions = {
+                const careerSuggestionsData = {
                     R: {
                         name: "Realistic (The Doers) 🛠️",
                         description: "You enjoy working with your hands, tools, and being physically active. You like practical, hands-on tasks.",
@@ -476,7 +506,7 @@
                         ]
                     },
                     E: {
-                        name: "Enterprising (The Persuaders) �",
+                        name: "Enterprising (The Persuaders) 👑",
                         description: "You are confident, persuasive, and like to lead. You enjoy starting projects and influencing others.",
                         careers: [
                             { title: "Entrepreneur/Startup Founder", prospect: "Brunei and ASEAN actively support new businesses, especially in tech and innovative sectors." },
@@ -501,7 +531,7 @@
                 careerSuggestionsDiv.innerHTML = '';
 
                 topCodes.forEach(code => {
-                    const typeInfo = careerSuggestions[code];
+                    const typeInfo = careerSuggestionsData[code];
                     if (typeInfo) {
                         const typeSection = document.createElement('div');
                         typeSection.className = 'career-suggestion';
@@ -517,10 +547,85 @@
                     }
                 });
 
-                document.getElementById('riasecForm').classList.add('hidden');
+                document.getElementById('riaseacForm').classList.add('hidden');
                 resultsSection.classList.remove('hidden');
                 resultsSection.scrollIntoView({ behavior: 'smooth' });
             }
+        });
+
+        // Email Results Functionality
+        emailResultsButton.addEventListener('click', function() {
+            const riaseacCodes = document.getElementById('riaseacCodes').textContent;
+            let emailBody = `Hello! Here are your RIASEC Career Interest Test Results:\n\n`;
+            emailBody += `Your Top Interests: ${riaseacCodes}\n\n`;
+            emailBody += `Here are some career suggestions based on your profile:\n\n`;
+
+            const careerSuggestionsDivs = document.querySelectorAll('#careerSuggestions .career-suggestion');
+            careerSuggestionsDivs.forEach(div => {
+                const title = div.querySelector('h4').textContent;
+                const description = div.querySelector('p').textContent;
+                emailBody += `--- ${title} ---\n`;
+                emailBody += `${description}\n\n`;
+                div.querySelectorAll('ul li').forEach(li => {
+                    emailBody += `- ${li.textContent}\n`;
+                });
+                emailBody += `\n`;
+            });
+
+            const subject = encodeURIComponent("My RIASEC Career Interest Test Results");
+            const body = encodeURIComponent(emailBody);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        });
+
+        // Save as PDF Functionality
+        savePdfButton.addEventListener('click', function() {
+            const element = document.getElementById('results'); // Target the results section
+            const opt = {
+                margin: 1,
+                filename: 'RIASEC_Career_Results.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Show a temporary message while generating PDF
+            const messageBox = document.createElement('div');
+            messageBox.textContent = "Generating PDF... please wait! ⏳";
+            messageBox.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #d1e7dd;
+                border: 2px solid #84c6a9;
+                padding: 1rem 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: 600;
+                color: #0f5132;
+                font-size: 1.1rem;
+            `;
+            document.body.appendChild(messageBox);
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                messageBox.textContent = "PDF saved successfully! 🎉";
+                messageBox.style.backgroundColor = '#d4edda';
+                messageBox.style.borderColor = '#28a745';
+                messageBox.style.color = '#155724';
+                setTimeout(() => {
+                    messageBox.remove();
+                }, 3000);
+            }).catch(error => {
+                messageBox.textContent = "Error saving PDF. Please try again. 😢";
+                messageBox.style.backgroundColor = '#f8d7da';
+                messageBox.style.borderColor = '#dc3545';
+                messageBox.style.color = '#721c24';
+                console.error("PDF generation error:", error);
+                setTimeout(() => {
+                    messageBox.remove();
+                }, 3000);
+            });
         });
 
         // Initial display
